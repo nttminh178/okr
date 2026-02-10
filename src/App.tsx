@@ -211,7 +211,7 @@ function App() {
             {/* Overview Stats */}
             <section className="card" style={{ marginBottom: '2rem' }}>
               <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-muted)', marginBottom: '1.5rem', letterSpacing: '0.05em' }}>OVERVIEW</div>
-              <div className="stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem' }}>
+              <div className="stats-grid">
                 <StatItem icon={<Clock color="#6366f1" />} value={mockStats.daysLeft} label="Days left" />
                 <StatItem icon={<TrendingUp color="#10b981" />} value={`${mockStats.overallProgress}%`} label="Overall progress" />
                 <StatItem icon={<CheckCircle2 color="#3b82f6" />} value={mockStats.tasksCompleted} label="Tasks completed" />
@@ -297,7 +297,7 @@ const DashboardView = () => (
 );
 
 const StatItem = ({ icon, value, label }: { icon: React.ReactNode, value: any, label: string }) => (
-  <div className="stat-item" style={{ display: 'flex', alignItems: 'center', gap: '1rem', borderRight: '1px solid var(--border)', paddingRight: '1rem' }}>
+  <div className="stat-item">
     <div className="icon-wrapper" style={{
       width: 48,
       height: 48,
@@ -311,7 +311,7 @@ const StatItem = ({ icon, value, label }: { icon: React.ReactNode, value: any, l
     }}>
       {icon}
     </div>
-    <div>
+    <div className="text-container">
       <div style={{ fontSize: '1.1rem', fontWeight: 700 }}>{value}</div>
       <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>{label}</div>
     </div>
@@ -324,15 +324,10 @@ const OKRItem = ({ okr, depth = 0, isMobile = false }: { okr: OKR, depth?: numbe
 
   return (
     <div style={{ marginLeft: paddingLeft }}>
-      <div className="card" style={{
-        padding: '0.75rem 1rem',
-        marginBottom: '0.5rem',
-        display: 'flex',
-        alignItems: 'center',
-        gap: '0.75rem',
+      <div className="card okr-item-card" style={{
         borderLeft: isObjective ? `4px solid ${okr.status === 'at-risk' ? 'var(--danger)' : 'var(--success)'}` : '1px solid var(--border)'
       }}>
-        <div style={{ opacity: 0.4 }}><ChevronRight size={16} /></div>
+        <div style={{ opacity: 0.4, flexShrink: 0 }}><ChevronRight size={16} /></div>
         <div style={{
           width: 16,
           height: 16,
@@ -340,15 +335,15 @@ const OKRItem = ({ okr, depth = 0, isMobile = false }: { okr: OKR, depth?: numbe
           background: okr.status === 'at-risk' ? 'var(--danger)' : 'var(--success)',
           flexShrink: 0
         }} />
-        <div style={{ flex: 1, fontWeight: isObjective ? 600 : 400, fontSize: isMobile ? '0.85rem' : '1rem' }}>{okr.title}</div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-          <div style={{
+        <div className="okr-item-title" style={{ fontWeight: isObjective ? 600 : 400 }}>{okr.title}</div>
+        <div className="okr-item-metrics">
+          <div className="desktop-only" style={{
             width: 24,
             height: 24,
             background: '#e5e7eb',
             borderRadius: '50%',
             fontSize: '0.65rem',
-            display: isMobile ? 'none' : 'flex',
+            display: 'flex',
             alignItems: 'center',
             justifyContent: 'center'
           }}>
@@ -358,10 +353,11 @@ const OKRItem = ({ okr, depth = 0, isMobile = false }: { okr: OKR, depth?: numbe
             color: okr.status === 'at-risk' ? 'var(--danger)' : 'var(--success)',
             fontWeight: 700,
             fontSize: '0.8rem',
+            width: '40px'
           }}>
             +{okr.progress}%
           </div>
-          <div style={{ width: isMobile ? 40 : 80, height: 6, background: '#f1f5f9', borderRadius: 10 }}>
+          <div className="okr-item-progress-bar" style={{ width: 80, height: 6, background: '#f1f5f9', borderRadius: 10, flexShrink: 0 }}>
             <div style={{
               width: `${okr.progress}%`,
               height: '100%',
