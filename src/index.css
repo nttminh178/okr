@@ -1,18 +1,24 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap');
 
 :root {
-  --primary: #004d4d;
-  --primary-dark: #002b2b;
+  --primary: #0b1a30;
+  /* FPT Deep Blue - Assuming this is the new primary */
+  --primary-dark: #0b1a30;
+  /* FPT Deep Blue */
   --primary-light: #006666;
-  --accent: #FF8A71;
-  --accent-hover: #ff7557;
-  --bg-main: #f3f4f6;
+  /* Kept from original as no new value provided */
+  --accent: #F58220;
+  /* FPT Orange */
+  --accent-hover: #e67616;
+  --bg-main: #f4f7fa;
   --bg-card: #ffffff;
-  --text-main: #1f2937;
-  --text-muted: #6b7280;
-  --border: #e5e7eb;
+  /* Kept from original as no new value provided */
+  --text-main: #1e293b;
+  --text-muted: #64748b;
+  --border: #e2e8f0;
   --success: #10b981;
   --warning: #f59e0b;
+  /* Kept from original as no new value provided */
   --danger: #ef4444;
   --sidebar-width: 240px;
 }
@@ -30,7 +36,11 @@ body {
   line-height: 1.5;
 }
 
-h1, h2, h3, h4, .brand {
+h1,
+h2,
+h3,
+h4,
+.brand {
   font-family: 'Outfit', sans-serif;
 }
 
@@ -71,21 +81,35 @@ h1, h2, h3, h4, .brand {
   font-weight: 600;
 }
 
-.badge-success { background: #dcfce7; color: #166534; }
-.badge-warning { background: #fef9c3; color: #854d0e; }
-.badge-danger { background: #fee2e2; color: #991b1b; }
+.badge-success {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.badge-warning {
+  background: #fef9c3;
+  color: #854d0e;
+}
+
+.badge-danger {
+  background: #fee2e2;
+  color: #991b1b;
+}
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
 }
+
 ::-webkit-scrollbar-track {
   background: transparent;
 }
+
 ::-webkit-scrollbar-thumb {
   background: #cbd5e1;
   border-radius: 10px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;
 }

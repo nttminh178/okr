@@ -59,9 +59,9 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
                         alignItems: 'center',
                         justifyContent: 'center'
                     }}>
-                        <Target size={20} color="white" />
+                        <Target size={20} color="var(--primary-dark)" />
                     </div>
-                    tability
+                    <span style={{ color: 'white' }}>FPT</span> <span style={{ color: 'var(--accent)', marginLeft: '-0.5rem' }}>OKR</span>
                     <div style={{ marginLeft: 'auto', display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
                         <Settings size={18} style={{ opacity: 0.5 }} className="desktop-only" />
                         <X
