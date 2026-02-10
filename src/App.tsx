@@ -327,15 +327,25 @@ const OKRItem = ({ okr, depth = 0, isMobile = false }: { okr: OKR, depth?: numbe
       <div className="card okr-item-card" style={{
         borderLeft: isObjective ? `4px solid ${okr.status === 'at-risk' ? 'var(--danger)' : 'var(--success)'}` : '1px solid var(--border)'
       }}>
-        <div style={{ opacity: 0.4, flexShrink: 0 }}><ChevronRight size={16} /></div>
-        <div style={{
-          width: 16,
-          height: 16,
-          borderRadius: 4,
-          background: okr.status === 'at-risk' ? 'var(--danger)' : 'var(--success)',
-          flexShrink: 0
-        }} />
-        <div className="okr-item-title" style={{ fontWeight: isObjective ? 600 : 400 }}>{okr.title}</div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flex: 1, minWidth: 0 }}>
+          <div style={{ opacity: 0.4, flexShrink: 0 }}><ChevronRight size={16} /></div>
+          <div style={{
+            width: 16,
+            height: 16,
+            borderRadius: 4,
+            background: okr.status === 'at-risk' ? 'var(--danger)' : 'var(--success)',
+            flexShrink: 0
+          }} />
+          <div className="okr-item-title" style={{
+            fontWeight: isObjective ? 700 : 500,
+            fontSize: isObjective ? (isMobile ? '0.9rem' : '1.05rem') : (isMobile ? '0.85rem' : '0.95rem'),
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis'
+          }}>
+            {okr.title}
+          </div>
+        </div>
         <div className="okr-item-metrics">
           <div className="desktop-only" style={{
             width: 24,

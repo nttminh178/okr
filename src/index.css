@@ -266,13 +266,11 @@ h4,
 @media (max-width: 640px) {
   .okr-item-card {
     flex-wrap: wrap;
-    align-items: flex-start !important;
+    align-items: center !important;
     gap: 0.5rem;
   }
 
   .okr-item-title {
-    width: calc(100% - 40px);
-    order: 1;
     font-size: 0.85rem !important;
   }
 
