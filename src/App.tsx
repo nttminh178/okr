@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Bell,
   Search,
@@ -12,7 +12,8 @@ import {
   Lock,
   PlayCircle,
   HelpCircle,
-  MoreHorizontal
+  MoreHorizontal,
+  Menu
 } from 'lucide-react';
 import {
   LineChart,
@@ -98,16 +99,32 @@ const mockOKRs: OKR[] = [
 
 function App() {
   const [view, setView] = useState<'list' | 'dashboard'>('list');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const mobile = window.innerWidth <= 1024;
+      setIsMobile(mobile);
+      if (!mobile) setIsSidebarOpen(true);
+      else setIsSidebarOpen(false);
+    };
+    window.addEventListener('resize', handleResize);
+    handleResize();
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   return (
     <div style={{ display: 'flex', minHeight: '100vh' }}>
-      <Sidebar />
+      <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
       <main style={{
-        marginLeft: 'var(--sidebar-width)',
+        marginLeft: isMobile ? 0 : 'var(--sidebar-width)',
         flex: 1,
-        padding: '2rem',
+        padding: isMobile ? '1rem' : '2rem',
         maxWidth: '1200px',
-        margin: '0 auto 0 var(--sidebar-width)'
+        margin: isMobile ? '0 auto' : '0 auto 0 var(--sidebar-width)',
+        width: '100%',
+        transition: 'margin-left 0.3s'
       }}>
         {/* Header */}
         <header style={{
@@ -116,15 +133,22 @@ function App() {
           alignItems: 'center',
           marginBottom: '2rem'
         }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-            <div style={{ fontSize: '1.5rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <button
+              className="mobile-only"
+              onClick={() => setIsSidebarOpen(true)}
+              style={{ background: 'none', border: 'none', padding: 4, cursor: 'pointer' }}
+            >
+              <Menu size={24} />
+            </button>
+            <div style={{ fontSize: isMobile ? '1.1rem' : '1.5rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               <span role="img" aria-label="market">🌻</span> Marketing OKRs
             </div>
-            <Lock size={18} style={{ opacity: 0.4 }} />
-            <PlayCircle size={18} style={{ opacity: 0.4 }} />
+            <Lock size={18} style={{ opacity: 0.4 }} className="desktop-only" />
+            <PlayCircle size={18} style={{ opacity: 0.4 }} className="desktop-only" />
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-            <Search size={20} style={{ opacity: 0.4 }} />
+            <Search size={20} style={{ opacity: 0.4 }} className="desktop-only" />
             <Share2 size={20} style={{ opacity: 0.4 }} />
             <Bell size={20} style={{ opacity: 0.4 }} />
             <div style={{
@@ -144,11 +168,14 @@ function App() {
         {/* Tabs */}
         <div style={{
           display: 'flex',
-          gap: '2rem',
+          gap: isMobile ? '1rem' : '2rem',
           borderBottom: '1px solid var(--border)',
           marginBottom: '2rem',
           fontSize: '0.9rem',
-          color: 'var(--text-muted)'
+          color: 'var(--text-muted)',
+          overflowX: 'auto',
+          whiteSpace: 'nowrap',
+          scrollbarWidth: 'none'
         }}>
           {['Overview', 'Tasks', 'Cascade', 'Notes', 'Retrospectives'].map((tab) => (
             <div
@@ -184,7 +211,7 @@ function App() {
             {/* Overview Stats */}
             <section className="card" style={{ marginBottom: '2rem' }}>
               <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-muted)', marginBottom: '1.5rem', letterSpacing: '0.05em' }}>OVERVIEW</div>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem' }}>
+              <div className="stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem' }}>
                 <StatItem icon={<Clock color="#6366f1" />} value={mockStats.daysLeft} label="Days left" />
                 <StatItem icon={<TrendingUp color="#10b981" />} value={`${mockStats.overallProgress}%`} label="Overall progress" />
                 <StatItem icon={<CheckCircle2 color="#3b82f6" />} value={mockStats.tasksCompleted} label="Tasks completed" />
@@ -195,7 +222,7 @@ function App() {
             {/* OKR List */}
             <section style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
               {mockOKRs.map(okr => (
-                <OKRItem key={okr.id} okr={okr} />
+                <OKRItem key={okr.id} okr={okr} isMobile={isMobile} />
               ))}
             </section>
           </>
@@ -208,7 +235,7 @@ function App() {
 }
 
 const DashboardView = () => (
-  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+  <div className="charts-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
     <div className="card">
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
         <h3 style={{ fontSize: '1rem' }}>Progress Over Time</h3>
@@ -252,13 +279,13 @@ const DashboardView = () => (
       <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
         {[1, 2].map(i => (
           <div key={i} style={{ display: 'flex', gap: '1rem', paddingBottom: '1rem', borderBottom: '1px solid var(--border)' }}>
-            <div style={{ width: 40, height: 40, background: '#e5e7eb', borderRadius: '50%' }} />
+            <div style={{ width: 40, height: 40, background: '#e5e7eb', borderRadius: '50%', flexShrink: 0 }} />
             <div style={{ flex: 1 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ fontWeight: 600 }}>Clara Collins</span>
-                <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>2 hours ago</span>
+                <span style={{ fontWeight: 600, fontSize: '0.9rem' }}>Clara Collins</span>
+                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>2h ago</span>
               </div>
-              <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>
+              <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>
                 We're back on track with our lead target after a slow start. New, high-performing affiliates have boosted our lead volume...
               </p>
             </div>
@@ -270,8 +297,8 @@ const DashboardView = () => (
 );
 
 const StatItem = ({ icon, value, label }: { icon: React.ReactNode, value: any, label: string }) => (
-  <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', borderRight: '1px solid var(--border)', paddingRight: '1rem' }}>
-    <div style={{
+  <div className="stat-item" style={{ display: 'flex', alignItems: 'center', gap: '1rem', borderRight: '1px solid var(--border)', paddingRight: '1rem' }}>
+    <div className="icon-wrapper" style={{
       width: 48,
       height: 48,
       borderRadius: '50%',
@@ -279,46 +306,49 @@ const StatItem = ({ icon, value, label }: { icon: React.ReactNode, value: any, l
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      border: '1px solid var(--border)'
+      border: '1px solid var(--border)',
+      flexShrink: 0
     }}>
       {icon}
     </div>
     <div>
-      <div style={{ fontSize: '1.25rem', fontWeight: 700 }}>{value}</div>
-      <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{label}</div>
+      <div style={{ fontSize: '1.1rem', fontWeight: 700 }}>{value}</div>
+      <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>{label}</div>
     </div>
   </div>
 );
 
-const OKRItem = ({ okr, depth = 0 }: { okr: OKR, depth?: number }) => {
+const OKRItem = ({ okr, depth = 0, isMobile = false }: { okr: OKR, depth?: number, isMobile?: boolean }) => {
   const isObjective = okr.type === 'objective';
+  const paddingLeft = isMobile ? depth * 12 : depth * 24;
 
   return (
-    <div style={{ marginLeft: depth * 24 }}>
+    <div style={{ marginLeft: paddingLeft }}>
       <div className="card" style={{
-        padding: '1rem',
+        padding: '0.75rem 1rem',
         marginBottom: '0.5rem',
         display: 'flex',
         alignItems: 'center',
-        gap: '1rem',
+        gap: '0.75rem',
         borderLeft: isObjective ? `4px solid ${okr.status === 'at-risk' ? 'var(--danger)' : 'var(--success)'}` : '1px solid var(--border)'
       }}>
-        <div style={{ opacity: 0.4 }}><ChevronRight size={18} /></div>
+        <div style={{ opacity: 0.4 }}><ChevronRight size={16} /></div>
         <div style={{
-          width: 20,
-          height: 20,
+          width: 16,
+          height: 16,
           borderRadius: 4,
-          background: okr.status === 'at-risk' ? 'var(--danger)' : 'var(--success)'
+          background: okr.status === 'at-risk' ? 'var(--danger)' : 'var(--success)',
+          flexShrink: 0
         }} />
-        <div style={{ flex: 1, fontWeight: isObjective ? 600 : 400 }}>{okr.title}</div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+        <div style={{ flex: 1, fontWeight: isObjective ? 600 : 400, fontSize: isMobile ? '0.85rem' : '1rem' }}>{okr.title}</div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
           <div style={{
             width: 24,
             height: 24,
             background: '#e5e7eb',
             borderRadius: '50%',
-            fontSize: '0.7rem',
-            display: 'flex',
+            fontSize: '0.65rem',
+            display: isMobile ? 'none' : 'flex',
             alignItems: 'center',
             justifyContent: 'center'
           }}>
@@ -328,11 +358,10 @@ const OKRItem = ({ okr, depth = 0 }: { okr: OKR, depth?: number }) => {
             color: okr.status === 'at-risk' ? 'var(--danger)' : 'var(--success)',
             fontWeight: 700,
             fontSize: '0.8rem',
-            width: 40
           }}>
             +{okr.progress}%
           </div>
-          <div style={{ width: 80, height: 6, background: '#f1f5f9', borderRadius: 10 }}>
+          <div style={{ width: isMobile ? 40 : 80, height: 6, background: '#f1f5f9', borderRadius: 10 }}>
             <div style={{
               width: `${okr.progress}%`,
               height: '100%',
@@ -343,7 +372,7 @@ const OKRItem = ({ okr, depth = 0 }: { okr: OKR, depth?: number }) => {
         </div>
       </div>
       {okr.children?.map(child => (
-        <OKRItem key={child.id} okr={child} depth={depth + 1} />
+        <OKRItem key={child.id} okr={child} depth={depth + 1} isMobile={isMobile} />
       ))}
     </div>
   );
