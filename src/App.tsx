@@ -359,21 +359,23 @@ const OKRItem = ({ okr, depth = 0, isMobile = false }: { okr: OKR, depth?: numbe
           }}>
             {okr.owner[0]}
           </div>
-          <div style={{
-            color: okr.status === 'at-risk' ? 'var(--danger)' : 'var(--success)',
-            fontWeight: 700,
-            fontSize: '0.8rem',
-            width: '40px'
-          }}>
-            +{okr.progress}%
-          </div>
-          <div className="okr-item-progress-bar" style={{ width: 80, height: 6, background: '#f1f5f9', borderRadius: 10, flexShrink: 0 }}>
+          <div className="okr-progress-group" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
             <div style={{
-              width: `${okr.progress}%`,
-              height: '100%',
-              background: okr.status === 'at-risk' ? 'var(--danger)' : 'var(--success)',
-              borderRadius: 10
-            }} />
+              color: okr.status === 'at-risk' ? 'var(--danger)' : 'var(--success)',
+              fontWeight: 700,
+              fontSize: '0.8rem',
+              width: isMobile ? 'auto' : '40px'
+            }}>
+              +{okr.progress}%
+            </div>
+            <div className="okr-item-progress-bar" style={{ width: 80, height: 6, background: '#f1f5f9', borderRadius: 10, flexShrink: 0 }}>
+              <div style={{
+                width: `${okr.progress}%`,
+                height: '100%',
+                background: okr.status === 'at-risk' ? 'var(--danger)' : 'var(--success)',
+                borderRadius: 10
+              }} />
+            </div>
           </div>
         </div>
       </div>
